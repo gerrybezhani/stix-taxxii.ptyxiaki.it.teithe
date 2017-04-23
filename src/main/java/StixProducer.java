@@ -6,8 +6,11 @@ import org.mitre.cybox.cybox_2.ObjectType;
 import org.mitre.cybox.cybox_2.Observable;
 import org.mitre.cybox.objects.Address;
 import org.mitre.cybox.objects.CategoryTypeEnum;
+import org.mitre.stix.common_1.DateTimeWithPrecisionType;
 import org.mitre.stix.common_1.IndicatorBaseType;
 import org.mitre.stix.common_1.StructuredTextType;
+import org.mitre.stix.exploittarget_1.ExploitTarget;
+import org.mitre.stix.exploittarget_1.VulnerabilityType;
 import org.mitre.stix.indicator_2.Indicator;
 import org.mitre.stix.stix_1.IndicatorsType;
 import org.mitre.stix.stix_1.STIXHeaderType;
@@ -16,6 +19,7 @@ import org.mitre.stix.stix_1.STIXPackage;
 import javax.xml.bind.JAXBContext;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -70,5 +74,21 @@ public class StixProducer {
         System.out.println(StringUtils.repeat("-", 120));
 
         System.out.println("Validates: " + stixPackage.validate());
+    }
+
+    public static void cveGen(Map<String,String> content)
+    {
+
+        DateTimeWithPrecisionType dt = new DateTimeWithPrecisionType();
+
+        ExploitTarget exploitTarget = new ExploitTarget();
+        VulnerabilityType vulnerabilityType = new VulnerabilityType().
+                withTitle(content.get("Title"))
+                .withDescriptions(StructuredTextType.fromXMLString(content.get("Description")))
+                .withShortDescriptions(StructuredTextType.fromXMLString(content.get("Overview")))
+                .withCVEID(content.get("Other Information"))
+                .withPublishedDateTime(null);
+
+
     }
 }
