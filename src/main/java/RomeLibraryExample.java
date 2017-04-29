@@ -22,7 +22,7 @@ public class RomeLibraryExample {
         }
 
         System.out.println(parsedCont);
-        System.out.println("----------------------------------");
+        System.out.println("-----------------------------------");
             System.out.println();
 
 
