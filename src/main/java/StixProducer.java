@@ -8,6 +8,7 @@ import org.mitre.cybox.objects.Address;
 import org.mitre.cybox.objects.CategoryTypeEnum;
 import org.mitre.stix.common_1.DateTimeWithPrecisionType;
 import org.mitre.stix.common_1.IndicatorBaseType;
+import org.mitre.stix.common_1.ReferencesType;
 import org.mitre.stix.common_1.StructuredTextType;
 import org.mitre.stix.exploittarget_1.ExploitTarget;
 import org.mitre.stix.exploittarget_1.VulnerabilityType;
@@ -88,6 +89,8 @@ public class StixProducer {
                 .withShortDescriptions(StructuredTextType.fromXMLString(content.get("Overview")))
                 .withCVEID(content.get("Other Information"))
                 .withPublishedDateTime(null);
+
+
 
 
     }

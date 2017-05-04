@@ -11,6 +11,7 @@ public class RomeLibraryExample {
 
     public static void main(String[] args){
 
+        System.out.println("1 +" + new HelperMethods().getIpCategory("HSBC"));
         ArrayList<String> urls = AdressesClass.getUrls();
 
 

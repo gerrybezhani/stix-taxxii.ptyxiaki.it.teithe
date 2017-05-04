@@ -45,7 +45,7 @@ public class CleanUpClass {
                     System.out.println(tempMap.get("Title"));
                     String[] table = tempMap.get("Title").split("\\|");
                     cleanedMap.put("IP",table[0]);
-                    cleanedMap.put("Cat",table[1]);
+                    cleanedMap.put("Cat",new HelperMethods().getIpCategory(table[1]));
                 }
             else
             {
