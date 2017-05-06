@@ -11,8 +11,9 @@ public class RomeLibraryExample {
 
     public static void main(String[] args){
 
-        System.out.println("1 +" + new HelperMethods().getIpCategory("HSBC"));
-        ArrayList<String> urls = AdressesClass.getUrls();
+        //test call to test C2 IP stix producer
+       StixProducer.produce("192.168.1.1","Harvester");
+
 
 
         ArrayList<Map<String,String>> parsedCont = ParsersFromRssClass.parseRssFeeds("http://www.kb.cert.org/vulfeed");

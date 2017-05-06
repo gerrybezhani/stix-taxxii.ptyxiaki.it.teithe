@@ -18,18 +18,27 @@ import org.mitre.stix.stix_1.STIXHeaderType;
 import org.mitre.stix.stix_1.STIXPackage;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by gerry on 4/14/2017.
  */
 public class StixProducer {
 
-    public static void produce(String IP)
-    {
+    public static void produce(String IP,String type) {
+        XMLGregorianCalendar now = null;
+        try {
+            now = DatatypeFactory.newInstance()
+                    .newXMLGregorianCalendar(
+                            new GregorianCalendar(TimeZone.getTimeZone("UTC")));
+        } catch (DatatypeConfigurationException e) {
+            e.printStackTrace();
+        }
+
 
         StringObjectPropertyType stringObjectPropertyType = (new ObjectFactory()).createStringObjectPropertyType().withValue(IP);
         Address addr = new Address()
@@ -38,17 +47,18 @@ public class StixProducer {
                 .withIsSource(true);
 
 
-        ObjectType objt = new ObjectType().withProperties(addr).withId(new QName(UUID.randomUUID().toString()));
+        ObjectType objt = new ObjectType().withProperties(addr).withId(new QName("gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"));
         Observable obs = new Observable();
 
         obs.setObject(objt);
         final Indicator indicator = new Indicator()
                 .withId(new QName(UUID.randomUUID().toString()))
-                .withTimestamp(null)
-                .withTitle("R")
+                .withTimestamp(now)
+                .withTitle(type)
                 .withDescriptions(
                         new StructuredTextType()
-                        .withValue("Ip containign malware")
+                                .withValue("Ip Watchlist")
                 ).withObservable(obs);
 
         IndicatorsType indicators = new IndicatorsType(
@@ -60,15 +70,15 @@ public class StixProducer {
 
         STIXHeaderType stixHeader = new STIXHeaderType()
                 .withDescriptions(new StructuredTextType()
-                        .withValue("Example"));
+                        .withValue("IP WATCHLIST"));
 
         STIXPackage stixPackage = new STIXPackage()
                 .withSTIXHeader(stixHeader)
                 .withIndicators(indicators)
                 .withVersion("1.2")
-                .withTimestamp(null)
-                .withId(new QName("http://example.com/", "package-"
-                        + UUID.randomUUID().toString(), "example"));
+                .withTimestamp(now)
+                .withId(new QName("gerry.ptyxiaki.it.teithe", "package-"
+                        + UUID.randomUUID().toString(), "gerry"));
 
         System.out.println(stixPackage.toXMLString(true));
 

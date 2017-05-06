@@ -60,4 +60,12 @@ public class HelperMethods {
         }
         return category;
     }
+
+    //method to get curent time
+    public static void getTime()
+    {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        System.out.println( sdf.format(cal.getTime()) );
+    }
 }
