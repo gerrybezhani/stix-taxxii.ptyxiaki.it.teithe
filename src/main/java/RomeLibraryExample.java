@@ -16,6 +16,8 @@ public class RomeLibraryExample {
 
 
 
+
+
         ArrayList<Map<String,String>> parsedCont = ParsersFromRssClass.parseRssFeeds("http://www.kb.cert.org/vulfeed");
         try {
             ArrayList<Map<String,String>> cleanedCont = CleanUpClass.cleanUp(parsedCont);
@@ -26,7 +28,6 @@ public class RomeLibraryExample {
         System.out.println(parsedCont);
         System.out.println("----------------------------------");
             System.out.println();
-
 
 
 

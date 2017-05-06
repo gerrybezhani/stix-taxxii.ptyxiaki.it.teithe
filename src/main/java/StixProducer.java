@@ -6,16 +6,20 @@ import org.mitre.cybox.cybox_2.ObjectType;
 import org.mitre.cybox.cybox_2.Observable;
 import org.mitre.cybox.objects.Address;
 import org.mitre.cybox.objects.CategoryTypeEnum;
-import org.mitre.stix.common_1.DateTimeWithPrecisionType;
-import org.mitre.stix.common_1.IndicatorBaseType;
-import org.mitre.stix.common_1.ReferencesType;
-import org.mitre.stix.common_1.StructuredTextType;
+import org.mitre.stix.common_1.*;
+import org.mitre.stix.exploittarget_1.CVSSVectorType;
 import org.mitre.stix.exploittarget_1.ExploitTarget;
+import org.mitre.stix.exploittarget_1.PotentialCOAsType;
 import org.mitre.stix.exploittarget_1.VulnerabilityType;
 import org.mitre.stix.indicator_2.Indicator;
+import org.mitre.stix.stix_1.CoursesOfActionType;
 import org.mitre.stix.stix_1.IndicatorsType;
 import org.mitre.stix.stix_1.STIXHeaderType;
 import org.mitre.stix.stix_1.STIXPackage;
+import org.mitre.stix.ttp_1.AttackPatternsType;
+import org.mitre.stix.ttp_1.BehaviorType;
+import org.mitre.stix.ttp_1.TTP;
+import org.mitre.stix.ttp_1.VictimTargetingType;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -98,10 +102,30 @@ public class StixProducer {
                 .withDescriptions(StructuredTextType.fromXMLString(content.get("Description")))
                 .withShortDescriptions(StructuredTextType.fromXMLString(content.get("Overview")))
                 .withCVEID(content.get("Other Information"))
+                .withReferences(ReferencesType.fromXMLString(content.get("References")))
+                .withCVEID(null)
+                .withPublishedDateTime(null)
                 .withPublishedDateTime(null);
 
+        VictimTargetingType victimTargetingType = new VictimTargetingType().
+                withIdentity(IdentityType.fromXMLString(content.get("Vendor Information")));
 
+        CVSSVectorType cvssVectorType = new CVSSVectorType();
 
+        ExploitTargetBaseType exploitTargetBaseType = new ExploitTarget()
+                .withInformationSource(InformationSourceType.fromXMLString(content.get("Credit")));
+
+        TTP ttp = new TTP()
+                .withBehavior(new BehaviorType()
+                        .withAttackPatterns(AttackPatternsType.fromXMLString(content.get("Impact"))))
+                ;
+
+        CoursesOfActionType coursesOfActionType = new CoursesOfActionType()
+                .withCourseOfActions(CourseOfActionBaseType.fromXMLString(content.get("Solution")));
+
+        PotentialCOAsType potentialCOAsType = new PotentialCOAsType();
+        exploitTarget.withVulnerabilities(vulnerabilityType);
+        //exploitTarget.withPotentialCOAs(coursesOfActionType)
 
     }
 }
