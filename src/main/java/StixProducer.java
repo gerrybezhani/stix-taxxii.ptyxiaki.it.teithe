@@ -7,19 +7,15 @@ import org.mitre.cybox.cybox_2.Observable;
 import org.mitre.cybox.objects.Address;
 import org.mitre.cybox.objects.CategoryTypeEnum;
 import org.mitre.stix.common_1.*;
+import org.mitre.stix.courseofaction_1.CourseOfAction;
 import org.mitre.stix.exploittarget_1.CVSSVectorType;
 import org.mitre.stix.exploittarget_1.ExploitTarget;
 import org.mitre.stix.exploittarget_1.PotentialCOAsType;
 import org.mitre.stix.exploittarget_1.VulnerabilityType;
 import org.mitre.stix.indicator_2.Indicator;
-import org.mitre.stix.stix_1.CoursesOfActionType;
-import org.mitre.stix.stix_1.IndicatorsType;
-import org.mitre.stix.stix_1.STIXHeaderType;
-import org.mitre.stix.stix_1.STIXPackage;
-import org.mitre.stix.ttp_1.AttackPatternsType;
-import org.mitre.stix.ttp_1.BehaviorType;
-import org.mitre.stix.ttp_1.TTP;
-import org.mitre.stix.ttp_1.VictimTargetingType;
+import org.mitre.stix.stix_1.*;
+import org.mitre.stix.ttp_1.*;
+import org.mitre.stix.ttp_1.ExploitTargetsType;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -99,33 +95,82 @@ public class StixProducer {
         ExploitTarget exploitTarget = new ExploitTarget();
         VulnerabilityType vulnerabilityType = new VulnerabilityType().
                 withTitle(content.get("Title"))
-                .withDescriptions(StructuredTextType.fromXMLString(content.get("Description")))
-                .withShortDescriptions(StructuredTextType.fromXMLString(content.get("Overview")))
+                .withDescriptions(new StructuredTextType().withValue(content.get("Description")))
+                .withShortDescriptions(new StructuredTextType().withValue(content.get("Overview")))
                 .withCVEID(content.get("Other Information"))
-                .withReferences(ReferencesType.fromXMLString(content.get("References")))
+                .withReferences(new ReferencesType().withReferences(content.get("References")))
                 .withCVEID(null)
                 .withPublishedDateTime(null)
                 .withPublishedDateTime(null);
 
         VictimTargetingType victimTargetingType = new VictimTargetingType().
-                withIdentity(IdentityType.fromXMLString(content.get("Vendor Information")));
+                withIdentity(new IdentityType().withName(content.get("Vendor Information")));
 
         CVSSVectorType cvssVectorType = new CVSSVectorType();
+        vulnerabilityType.withCVSSScore(cvssVectorType);
 
+        InformationSourceType informationSourceType = new InformationSourceType()
+                .withDescriptions(new StructuredTextType().withValue(content.get("Credit")));
         ExploitTargetBaseType exploitTargetBaseType = new ExploitTarget()
-                .withInformationSource(InformationSourceType.fromXMLString(content.get("Credit")));
+                .withInformationSource(informationSourceType );
+
+        exploitTarget.withVulnerabilities(vulnerabilityType);
+
+        CourseOfActionBaseType courseOfActionBaseType = new CourseOfAction()
+                .withDescriptions(new StructuredTextType().withValue(content.get("Solution")));
+
+        RelatedCourseOfActionType relatedCourseOfActionType = new RelatedCourseOfActionType()
+                .withCourseOfAction(courseOfActionBaseType);
+
+        exploitTarget.withPotentialCOAs(
+                new PotentialCOAsType().withPotentialCOAs(relatedCourseOfActionType)
+        );
+
+
+
+
+
+
+        RelatedExploitTargetType exploitTargetType = new RelatedExploitTargetType()
+                .withExploitTarget(exploitTarget);
+
+
+
+        AttackPatternType attackPatternType = new AttackPatternType().withDescriptions(new StructuredTextType().withValue(content.get("Impact")));
 
         TTP ttp = new TTP()
                 .withBehavior(new BehaviorType()
-                        .withAttackPatterns(AttackPatternsType.fromXMLString(content.get("Impact"))))
-                ;
+                        .withAttackPatterns(new AttackPatternsType().withAttackPatterns(attackPatternType)))
+                .withExploitTargets(new ExploitTargetsType().withExploitTargets(exploitTargetType))
+                .withVictimTargeting(victimTargetingType);
 
-        CoursesOfActionType coursesOfActionType = new CoursesOfActionType()
-                .withCourseOfActions(CourseOfActionBaseType.fromXMLString(content.get("Solution")));
 
-        PotentialCOAsType potentialCOAsType = new PotentialCOAsType();
-        exploitTarget.withVulnerabilities(vulnerabilityType);
-        //exploitTarget.withPotentialCOAs(coursesOfActionType)
+        XMLGregorianCalendar now = null;
+        try {
+            now = DatatypeFactory.newInstance()
+                    .newXMLGregorianCalendar(
+                            new GregorianCalendar(TimeZone.getTimeZone("UTC")));
+        } catch (DatatypeConfigurationException e) {
+            e.printStackTrace();
+        }
 
+        STIXHeaderType stixHeader = new STIXHeaderType()
+                .withDescriptions(new StructuredTextType()
+                        .withValue("CVE exploit"));
+
+        STIXPackage stixPackage = new STIXPackage()
+                .withSTIXHeader(stixHeader)
+                .withTTPs(new TTPsType().withTTPS(ttp))
+                .withVersion("1.2")
+                .withTimestamp(now)
+                .withId(new QName("gerry.ptyxiaki.it.teithe", "package-"
+                        + UUID.randomUUID().toString(), "gerry"));
+
+        System.out.println(stixPackage.toXMLString(true));
+
+        System.out.println(StringUtils.repeat("-", 120));
+
+        System.out.println("Validates: " + stixPackage.validate());
     }
+
 }
