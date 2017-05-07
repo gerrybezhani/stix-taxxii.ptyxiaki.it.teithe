@@ -26,5 +26,6 @@
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpmime:4.3.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-core:4.1.4.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: com.threatconnect.sdk.core:threatconnect-sdk:${threatconnect-sdk.version}" level="project" />
   </component>
 </module>

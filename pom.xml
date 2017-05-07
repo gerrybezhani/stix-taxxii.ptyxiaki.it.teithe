@@ -24,6 +24,11 @@
             <artifactId>stix</artifactId>
             <version>1.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.threatconnect.sdk.core</groupId>
+            <artifactId>threatconnect-sdk</artifactId>
+            <version>${threatconnect-sdk.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
