@@ -12,7 +12,7 @@ public class RomeLibraryExample {
     public static void main(String[] args){
 
         //test call to test C2 IP stix producer
-       //StixProducer.produce("192.168.1.1","Harvester");
+       StixProducer.produce("192.168.1.1","Harvester");
 
 
 
