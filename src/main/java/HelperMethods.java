@@ -1,3 +1,6 @@
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -62,10 +65,16 @@ public class HelperMethods {
     }
 
     //method to get curent time
-    public static void getTime()
+    public static XMLGregorianCalendar getTime()
     {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        System.out.println( sdf.format(cal.getTime()) );
+        XMLGregorianCalendar now = null;
+        try {
+            now = DatatypeFactory.newInstance()
+                    .newXMLGregorianCalendar(
+                            new GregorianCalendar(TimeZone.getTimeZone("UTC")));
+        } catch (DatatypeConfigurationException e) {
+            e.printStackTrace();
+        }
+        return now;
     }
 }

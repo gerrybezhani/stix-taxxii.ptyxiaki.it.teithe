@@ -1,12 +1,16 @@
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.apache.commons.lang.StringUtils;
+import org.mitre.cybox.common_2.*;
 import org.mitre.cybox.common_2.ObjectFactory;
-import org.mitre.cybox.common_2.StringObjectPropertyType;
 import org.mitre.cybox.cybox_2.ObjectType;
 import org.mitre.cybox.cybox_2.Observable;
+import org.mitre.cybox.default_vocabularies_2.HashNameVocab10;
 import org.mitre.cybox.objects.Address;
 import org.mitre.cybox.objects.CategoryTypeEnum;
+import org.mitre.cybox.objects.FileObjectType;
 import org.mitre.stix.common_1.*;
+import org.mitre.stix.common_1.DateTimeWithPrecisionType;
+import org.mitre.stix.common_1.StructuredTextType;
 import org.mitre.stix.courseofaction_1.CourseOfAction;
 import org.mitre.stix.exploittarget_1.CVSSVectorType;
 import org.mitre.stix.exploittarget_1.ExploitTarget;
@@ -29,16 +33,84 @@ import java.util.*;
  */
 public class StixProducer {
 
-    public static void produce(String IP,String type) {
-        XMLGregorianCalendar now = null;
-        try {
-            now = DatatypeFactory.newInstance()
-                    .newXMLGregorianCalendar(
-                            new GregorianCalendar(TimeZone.getTimeZone("UTC")));
-        } catch (DatatypeConfigurationException e) {
-            e.printStackTrace();
-        }
+    //method that produces stix content for hashes of files
 
+    public static void produceForFileHash()
+    {
+        XMLGregorianCalendar now = HelperMethods.getTime();
+        FileObjectType fileObject = new FileObjectType()
+                .withHashes(new HashListType(new ArrayList<HashType>() {
+                    {
+                        add(new HashType()
+                                .withType(
+                                        new HashNameVocab10()
+                                                .withValue("MD5"))
+                                .withSimpleHashValue(
+                                        new SimpleHashValueType()
+                                                .withValue("4EC0027BEF4D7E1786A04D021FA8A67F")));
+                    }
+                }));
+
+        ObjectType obj = new ObjectType().withProperties(fileObject)
+                .withId(new QName("http://example.com/", "file-"
+                        + UUID.randomUUID().toString(), "example"));
+
+        Observable observable = new Observable().withId(new QName(
+                "http://example.com/", "observable-"
+                + UUID.randomUUID().toString(), "example"));
+
+        observable.setObject(obj);
+
+        IdentityType identity = new IdentityType()
+                .withName("The MITRE Corporation");
+
+        InformationSourceType producer = new InformationSourceType()
+                .withIdentity(identity)
+                .withTime(
+                        new TimeType()
+                                .withProducedTime(new org.mitre.cybox.common_2.DateTimeWithPrecisionType(now,null)));
+
+        final Indicator indicator = new Indicator()
+                .withId(new QName("http://example.com/", "indicator-"
+                        + UUID.randomUUID().toString(), "example"))
+                .withTimestamp(now)
+                .withTitle("File Hash Example")
+                .withDescriptions(
+                        new StructuredTextType()
+                                .withValue("An indicator containing a File observable with an associated hash"))
+                .withObservable(observable).withProducer(producer);
+
+        IndicatorsType indicators = new IndicatorsType(
+                new ArrayList<IndicatorBaseType>() {
+                    {
+                        add(indicator);
+                    }
+                });
+
+        STIXHeaderType stixHeader = new STIXHeaderType()
+                .withDescriptions(new StructuredTextType()
+                        .withValue("Example"));
+
+        STIXPackage stixPackage = new STIXPackage()
+                .withSTIXHeader(stixHeader)
+                .withIndicators(indicators)
+                .withVersion("1.2")
+                .withTimestamp(now)
+                .withId(new QName("http://example.com/", "package-"
+                        + UUID.randomUUID().toString(), "example"));
+
+        System.out.println(stixPackage.toXMLString(true));
+
+        System.out.println(StringUtils.repeat("-", 120));
+
+        System.out.println("Validates: " + stixPackage.validate());
+
+
+    }
+
+    public static void produce(String IP,String type) {
+
+        XMLGregorianCalendar now = HelperMethods.getTime();
 
         StringObjectPropertyType stringObjectPropertyType = (new ObjectFactory()).createStringObjectPropertyType().withValue(IP);
         Address addr = new Address()
@@ -145,14 +217,7 @@ public class StixProducer {
                 .withVictimTargeting(victimTargetingType);
 
 
-        XMLGregorianCalendar now = null;
-        try {
-            now = DatatypeFactory.newInstance()
-                    .newXMLGregorianCalendar(
-                            new GregorianCalendar(TimeZone.getTimeZone("UTC")));
-        } catch (DatatypeConfigurationException e) {
-            e.printStackTrace();
-        }
+        XMLGregorianCalendar now = HelperMethods.getTime();
 
         STIXHeaderType stixHeader = new STIXHeaderType()
                 .withDescriptions(new StructuredTextType()
