@@ -1,4 +1,3 @@
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import org.apache.commons.lang.StringUtils;
 import org.mitre.cybox.common_2.*;
 import org.mitre.cybox.common_2.ObjectFactory;
@@ -17,16 +16,18 @@ import org.mitre.stix.exploittarget_1.ExploitTarget;
 import org.mitre.stix.exploittarget_1.PotentialCOAsType;
 import org.mitre.stix.exploittarget_1.VulnerabilityType;
 import org.mitre.stix.indicator_2.Indicator;
-import org.mitre.stix.stix_1.*;
+import org.mitre.stix.stix_1.IndicatorsType;
+import org.mitre.stix.stix_1.STIXHeaderType;
+import org.mitre.stix.stix_1.STIXPackage;
+import org.mitre.stix.stix_1.TTPsType;
 import org.mitre.stix.ttp_1.*;
 import org.mitre.stix.ttp_1.ExploitTargetsType;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by gerry on 4/14/2017.
@@ -47,7 +48,7 @@ public class StixProducer {
                                                 .withValue(content.get("HASHTYPE")))
                                 .withSimpleHashValue(
                                         new SimpleHashValueType()
-                                                .withValue(content.get("MD5HASH"))));
+                                                .withValue(content.get("HASHVALUE"))));
                     }
                 }));
 

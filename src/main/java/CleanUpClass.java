@@ -47,6 +47,14 @@ public class CleanUpClass {
                     cleanedMap.put("IP",table[0]);
                     cleanedMap.put("Cat",new HelperMethods().getIpCategory(table[1]));
                 }
+            else if(MapUri.contains("malekal.com"))
+            {
+                String[] tmpTable =(tempMap.get("Description")).split(":");
+                String reference = tmpTable[1];
+                cleanedMap.put("HASHVALUE",tempMap.get("Title"));
+                cleanedMap.put("reference",reference);
+
+            }
             else
             {
                 throw new UriNotFoundException("uri not found!!");
