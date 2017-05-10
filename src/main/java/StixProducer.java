@@ -35,7 +35,7 @@ public class StixProducer {
 
     //method that produces stix content for hashes of files
 
-    public static void produceForFileHash()
+    public static void produceForFileHash(final Map<String,String> content)
     {
         XMLGregorianCalendar now = HelperMethods.getTime();
         FileObjectType fileObject = new FileObjectType()
@@ -44,37 +44,40 @@ public class StixProducer {
                         add(new HashType()
                                 .withType(
                                         new HashNameVocab10()
-                                                .withValue("MD5"))
+                                                .withValue(content.get("HASHTYPE")))
                                 .withSimpleHashValue(
                                         new SimpleHashValueType()
-                                                .withValue("4EC0027BEF4D7E1786A04D021FA8A67F")));
+                                                .withValue(content.get("MD5HASH"))));
                     }
                 }));
 
         ObjectType obj = new ObjectType().withProperties(fileObject)
-                .withId(new QName("http://example.com/", "file-"
-                        + UUID.randomUUID().toString(), "example"));
+                .withId(new QName("gerry.ptyxiaki.it.teithe", "file-"
+                        + UUID.randomUUID().toString(), "gerry"));
 
         Observable observable = new Observable().withId(new QName(
-                "http://example.com/", "observable-"
-                + UUID.randomUUID().toString(), "example"));
+                "gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"));
 
         observable.setObject(obj);
 
         IdentityType identity = new IdentityType()
                 .withName("The MITRE Corporation");
 
+        ReferencesType referencesType = new ReferencesType().withReferences(content.get("reference"));
+
         InformationSourceType producer = new InformationSourceType()
                 .withIdentity(identity)
                 .withTime(
                         new TimeType()
-                                .withProducedTime(new org.mitre.cybox.common_2.DateTimeWithPrecisionType(now,null)));
+                                .withProducedTime(new org.mitre.cybox.common_2.DateTimeWithPrecisionType(now,null)))
+                .withReferences(referencesType);
 
         final Indicator indicator = new Indicator()
-                .withId(new QName("http://example.com/", "indicator-"
-                        + UUID.randomUUID().toString(), "example"))
+                .withId(new QName("gerry.ptyxiaki.it.teithe", "indicator-"
+                        + UUID.randomUUID().toString(), "gerry"))
                 .withTimestamp(now)
-                .withTitle("File Hash Example")
+                .withTitle("Malicious MD5 file hash")
                 .withDescriptions(
                         new StructuredTextType()
                                 .withValue("An indicator containing a File observable with an associated hash"))
@@ -89,15 +92,15 @@ public class StixProducer {
 
         STIXHeaderType stixHeader = new STIXHeaderType()
                 .withDescriptions(new StructuredTextType()
-                        .withValue("Example"));
+                        .withValue("Malicious file hash"));
 
         STIXPackage stixPackage = new STIXPackage()
                 .withSTIXHeader(stixHeader)
                 .withIndicators(indicators)
                 .withVersion("1.2")
                 .withTimestamp(now)
-                .withId(new QName("http://example.com/", "package-"
-                        + UUID.randomUUID().toString(), "example"));
+                .withId(new QName("gerry.ptyxiaki.it.teithe", "package-"
+                        + UUID.randomUUID().toString(), "gerry"));
 
         System.out.println(stixPackage.toXMLString(true));
 
