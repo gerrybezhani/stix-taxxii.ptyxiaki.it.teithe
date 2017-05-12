@@ -4,6 +4,12 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -34,6 +40,28 @@ public class ParsersFromRssClass {
         else
             return getContFromRssNoHtml(url);
 
+    }
+
+    public static void getFromMalshare()
+    {
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpGet httpGet = new HttpGet(AdressesClass.getUrls().get(4)+"/api.php?api_key=" +ApiKeyClass.malshare+"&action=getlist");
+        try {
+            CloseableHttpResponse response1 = httpclient.execute(httpGet);
+            try {
+                System.out.println(response1.getStatusLine());
+                HttpEntity entity1 = response1.getEntity();
+                System.out.print(entity1.toString());
+                // do something useful with the response body
+                // and ensure it is fully consumed
+                EntityUtils.consume(entity1);
+            } finally {
+                response1.close();
+            }
+        }catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 

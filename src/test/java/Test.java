@@ -18,6 +18,7 @@ public class Test {
         //Calendar cal = HelperMethods.getDateFromString("06 Mar 2017");
         //System.out.println(cal.getTime());
 
+        ParsersFromRssClass.getFromMalshare();
         Map<String,String> testMap = new HashMap<String, String>();
         testMap.put("HASHTYPE","MD5");
         testMap.put("MD5HASH","123cbr23423fnn23rn");

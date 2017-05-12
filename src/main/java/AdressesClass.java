@@ -9,6 +9,7 @@ public class AdressesClass {
      private static String uri2 = "http://malc0de.com/rss/";
      private static String uri3 = "http://www.malwaredomainlist.com/hostslist/mdl.xml";
      private static String uri4 = "http://www.kb.cert.org/vulfeed";
+     private static String uri5 = "http://www.malshare.com";
 
 
 
@@ -19,6 +20,7 @@ public class AdressesClass {
         uriArList.add(uri2);
         uriArList.add(uri3);
         uriArList.add(uri4);
+        uriArList.add(uri5);
 
         return uriArList;
     }
