@@ -10,6 +10,7 @@ public class AdressesClass {
      private static String uri3 = "http://www.malwaredomainlist.com/hostslist/mdl.xml";
      private static String uri4 = "http://www.kb.cert.org/vulfeed";
      private static String uri5 = "http://www.malshare.com";
+     private static String uri6 = "http://api.blocklist.de/api.php?";
 
 
 
