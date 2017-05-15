@@ -14,6 +14,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.mitre.maec.xmlschema.maec_package_2.SourceType;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -42,26 +43,28 @@ public class ParsersFromRssClass {
 
     }
 
-    public static void getFromMalshare()
-    {
+    public static String[] getFromMalshare() {
         CloseableHttpClient httpclient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(AdressesClass.getUrls().get(4)+"/api.php?api_key=" +ApiKeyClass.malshare+"&action=getlist");
+        HttpGet httpGet = new HttpGet(AdressesClass.getUrls().get(4) + "/api.php?api_key=" + ApiKeyClass.malshare + "&action=getlist");
+        String[] splitCont = new String[0];
         try {
             CloseableHttpResponse response1 = httpclient.execute(httpGet);
             try {
                 System.out.println(response1.getStatusLine());
                 HttpEntity entity1 = response1.getEntity();
-                System.out.print(entity1.toString());
-                // do something useful with the response body
-                // and ensure it is fully consumed
+                String cont = EntityUtils.toString(entity1);
+                splitCont = cont.split("<br>");
+
+
                 EntityUtils.consume(entity1);
             } finally {
                 response1.close();
             }
-        }catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return splitCont;
     }
 
 
