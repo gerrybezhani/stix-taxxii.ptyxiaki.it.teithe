@@ -55,6 +55,19 @@ public class CleanUpClass {
                 cleanedMap.put("reference",reference);
 
             }
+            else if (MapUri.contains("threatexpert.com"))
+            {
+                cleanedMap.put("virus",tempMap.get("Title"));
+            }
+            else if (MapUri.contains("malwared.malwaremustdie.org/rss_bin.php"))
+            {
+                cleanedMap.put("virus",tempMap.get("Title"));
+                cleanedMap.put("MD5",tempMap.get("Description"));
+            }
+            else if(MapUri.contains("malwared.malwaremustdie.org/rss_ssh.php"))
+            {
+                cleanedMap.put("IP",tempMap.get("Description"));
+            }
             else
             {
                 throw new UriNotFoundException("uri not found!!");
