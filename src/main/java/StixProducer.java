@@ -8,6 +8,7 @@ import org.mitre.cybox.objects.Address;
 import org.mitre.cybox.objects.CategoryTypeEnum;
 import org.mitre.cybox.objects.FileObjectType;
 import org.mitre.stix.common_1.*;
+import org.mitre.stix.common_1.ControlledVocabularyStringType;
 import org.mitre.stix.common_1.DateTimeWithPrecisionType;
 import org.mitre.stix.common_1.StructuredTextType;
 import org.mitre.stix.courseofaction_1.CourseOfAction;
@@ -33,6 +34,44 @@ import java.util.UUID;
  * Created by gerry on 4/14/2017.
  */
 public class StixProducer {
+
+    //method that produces stix contnet for threats
+    public static void produceForThreat(String threat)
+    {
+        XMLGregorianCalendar now = HelperMethods.getTime();
+
+        MalwareInstanceType malwareInstanceType = new MalwareInstanceType().withId(new QName("gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"))
+                .withTitle(threat);
+
+        MalwareType malwareType = new MalwareType().withMalwareInstances(malwareInstanceType);
+
+        TTP ttp = new TTP()
+                .withTitle("Malware/Adaware")
+                .withShortDescriptions(new StructuredTextType().withValue("badware "+threat))
+                .withBehavior(new BehaviorType().withMalware(malwareType));
+
+        STIXHeaderType stixHeader = new STIXHeaderType()
+                .withDescriptions(new StructuredTextType()
+                        .withValue("Malware/adaware"));
+
+        STIXPackage stixPackage = new STIXPackage()
+                .withSTIXHeader(stixHeader)
+                .withVersion("1.2")
+                .withTimestamp(now)
+                .withId(new QName("gerry.ptyxiaki.it.teithe", "package-"
+                        + UUID.randomUUID().toString(), "gerry"))
+                .withTTPs(new TTPsType().withTTPS(ttp));
+
+
+        System.out.println(stixPackage.toXMLString(true));
+
+        System.out.println(StringUtils.repeat("-", 120));
+
+        System.out.println("Validates: " + stixPackage.validate());
+
+    }
+
 
     //method that produces stix content for hashes of files
 

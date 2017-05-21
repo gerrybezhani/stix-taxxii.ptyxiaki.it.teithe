@@ -15,6 +15,7 @@ import java.util.Map;
 public class Test {
     public static void main(String[] args) {
 
+        StixProducer.produceForThrear("DDos.5.6");
         //Calendar cal = HelperMethods.getDateFromString("06 Mar 2017");
         //System.out.println(cal.getTime());
 
