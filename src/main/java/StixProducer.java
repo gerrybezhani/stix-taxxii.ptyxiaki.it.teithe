@@ -35,6 +35,49 @@ import java.util.UUID;
  */
 public class StixProducer {
 
+    //method for produces stix content for malware infected hosts
+    public static void produceForBadHost(final Map<String,String> contents)
+    {
+        XMLGregorianCalendar now = HelperMethods.getTime();
+
+        StringObjectPropertyType stringObjectPropertyType = (new ObjectFactory()).createStringObjectPropertyType().withValue(contents.get("IP"));
+        Address addr = new Address()
+                .withAddressValue(stringObjectPropertyType)
+                .withCategory(CategoryTypeEnum.IPV_4_ADDR)
+                .withIsSource(true);
+
+
+        ObjectType objt = new ObjectType().withProperties(addr).withId(new QName("gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"));
+        Observable obs = new Observable();
+
+        obs.setObject(objt);
+
+        FileObjectType fileObject = new FileObjectType()
+                .withHashes(new HashListType(new ArrayList<HashType>() {
+                    {
+                        add(new HashType()
+                                .withType(
+                                        new HashNameVocab10()
+                                                .withValue(contents.get("HASHTYPE")))
+                                .withSimpleHashValue(
+                                        new SimpleHashValueType()
+                                                .withValue(contents.get("HASHVALUE"))));
+                    }
+                }));
+
+        ObjectType obj = new ObjectType().withProperties(fileObject)
+                .withId(new QName("gerry.ptyxiaki.it.teithe", "file-"
+                        + UUID.randomUUID().toString(), "gerry"));
+
+        Observable observable = new Observable().withId(new QName(
+                "gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"));
+
+        observable.setObject(obj);
+
+
+    }
     //method that produces stix contnet for threats
     public static void produceForThreat(String threat)
     {
