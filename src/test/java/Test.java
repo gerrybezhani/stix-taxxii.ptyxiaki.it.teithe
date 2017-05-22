@@ -15,17 +15,18 @@ import java.util.Map;
 public class Test {
     public static void main(String[] args) {
 
-        StixProducer.produceForThrear("DDos.5.6");
+       // StixProducer.produceForThrear("DDos.5.6");
         //Calendar cal = HelperMethods.getDateFromString("06 Mar 2017");
         //System.out.println(cal.getTime());
 
-        ParsersFromRssClass.getFromMalshare();
+     //   ParsersFromRssClass.getFromMalshare();
         Map<String,String> testMap = new HashMap<String, String>();
         testMap.put("HASHTYPE","MD5");
         testMap.put("MD5HASH","123cbr23423fnn23rn");
-        testMap.put("reference","wge4");
+        testMap.put("HOST","testhost.com");
+        testMap.put("IP","192.168.1.8");
 
-        StixProducer.produceForFileHash(testMap);
+        StixProducer.produceForBadHost(testMap);
         //Testiong ThreatCOnnect SDK
         Connection conn = null;
 

@@ -14,7 +14,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.mitre.maec.xmlschema.maec_package_2.SourceType;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

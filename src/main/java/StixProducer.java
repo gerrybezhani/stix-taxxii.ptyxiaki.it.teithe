@@ -7,8 +7,8 @@ import org.mitre.cybox.default_vocabularies_2.HashNameVocab10;
 import org.mitre.cybox.objects.Address;
 import org.mitre.cybox.objects.CategoryTypeEnum;
 import org.mitre.cybox.objects.FileObjectType;
+import org.mitre.cybox.objects.Hostname;
 import org.mitre.stix.common_1.*;
-import org.mitre.stix.common_1.ControlledVocabularyStringType;
 import org.mitre.stix.common_1.DateTimeWithPrecisionType;
 import org.mitre.stix.common_1.StructuredTextType;
 import org.mitre.stix.courseofaction_1.CourseOfAction;
@@ -76,6 +76,49 @@ public class StixProducer {
 
         observable.setObject(obj);
 
+        StringObjectPropertyType stringObjectPropertyTypeHost = (new ObjectFactory()).createStringObjectPropertyType().withValue(contents.get("HOST"));
+
+        ObjectType obj2 = new ObjectType().withProperties(new Hostname().withHostnameValue(stringObjectPropertyTypeHost));
+        Observable observable2 = new Observable().withId(new QName(
+                "gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"));
+
+        observable2.setObject(obj2);
+
+        final Indicator indicator = new Indicator()
+                .withId(new QName("gerry.ptyxiaki.it.teithe", "indicator-"
+                        + UUID.randomUUID().toString(), "gerry"))
+                .withTimestamp(now)
+                .withTitle("Malware infected host")
+                .withObservable(obs)
+                .withObservable(observable)
+                .withObservable(observable2);
+
+        IndicatorsType indicators = new IndicatorsType(
+                new ArrayList<IndicatorBaseType>() {
+                    {
+                        add(indicator);
+                    }
+                });
+
+        STIXHeaderType stixHeader = new STIXHeaderType()
+                .withDescriptions(new StructuredTextType()
+                        .withValue("Malware infected host"));
+
+        STIXPackage stixPackage = new STIXPackage()
+                .withSTIXHeader(stixHeader)
+                .withVersion("1.2")
+                .withTimestamp(now)
+                .withId(new QName("gerry.ptyxiaki.it.teithe", "package-"
+                        + UUID.randomUUID().toString(), "gerry"))
+                .withIndicators(indicators);
+
+
+        System.out.println(stixPackage.toXMLString(true));
+
+        System.out.println(StringUtils.repeat("-", 120));
+
+        System.out.println("Validates: " + stixPackage.validate());
 
     }
     //method that produces stix contnet for threats
