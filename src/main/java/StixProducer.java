@@ -3,6 +3,8 @@ import org.mitre.cybox.common_2.*;
 import org.mitre.cybox.common_2.ObjectFactory;
 import org.mitre.cybox.cybox_2.ObjectType;
 import org.mitre.cybox.cybox_2.Observable;
+import org.mitre.cybox.cybox_2.ObservableCompositionType;
+import org.mitre.cybox.cybox_2.OperatorTypeEnum;
 import org.mitre.cybox.default_vocabularies_2.HashNameVocab10;
 import org.mitre.cybox.objects.Address;
 import org.mitre.cybox.objects.CategoryTypeEnum;
@@ -85,15 +87,23 @@ public class StixProducer {
 
         observable2.setObject(obj2);
 
+        //Arraylist for all the observables so we can create an observable composition
+        ArrayList<Observable> obsList = new ArrayList<Observable>();
+        obsList.add(obs);
+        obsList.add(observable);
+        obsList.add(observable2);
+
+
+        ObservableCompositionType observableCompositionType = new ObservableCompositionType(obsList, OperatorTypeEnum.AND);
+
+
+
         final Indicator indicator = new Indicator()
                 .withId(new QName("gerry.ptyxiaki.it.teithe", "indicator-"
                         + UUID.randomUUID().toString(), "gerry"))
                 .withTimestamp(now)
                 .withTitle("Malware infected host")
-                .withObservable(obs)
-                .withObservable(observable)
-                .withObservable(observable2);
-
+                .withObservable(new Observable().withObservableComposition(observableCompositionType));
         IndicatorsType indicators = new IndicatorsType(
                 new ArrayList<IndicatorBaseType>() {
                     {
