@@ -25,6 +25,7 @@ public class Test {
         testMap.put("MD5HASH","123cbr23423fnn23rn");
         testMap.put("HOST","testhost.com");
         testMap.put("IP","192.168.1.8");
+        testMap.put("ASN","2342");
 
         StixProducer.produceForBadHost(testMap);
         //Testiong ThreatCOnnect SDK

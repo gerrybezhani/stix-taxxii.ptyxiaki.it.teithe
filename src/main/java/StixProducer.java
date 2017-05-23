@@ -87,11 +87,22 @@ public class StixProducer {
 
         observable2.setObject(obj2);
 
+        //observable for asn
+        StringObjectPropertyType stringObjectPropertyTypeAsn = (new ObjectFactory()).createStringObjectPropertyType().withValue(contents.get("ASN"));
+
+        ObjectType objAsn = new ObjectType().withProperties(new Hostname().withHostnameValue(stringObjectPropertyTypeAsn));
+        Observable observableAsn = new Observable().withId(new QName(
+                "gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"));
+
+        observable2.setObject(objAsn);
+
         //Arraylist for all the observables so we can create an observable composition
         ArrayList<Observable> obsList = new ArrayList<Observable>();
         obsList.add(obs);
         obsList.add(observable);
         obsList.add(observable2);
+        obsList.add(observableAsn);
 
 
         ObservableCompositionType observableCompositionType = new ObservableCompositionType(obsList, OperatorTypeEnum.AND);
