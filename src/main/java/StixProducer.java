@@ -90,12 +90,23 @@ public class StixProducer {
         //observable for asn
         StringObjectPropertyType stringObjectPropertyTypeAsn = (new ObjectFactory()).createStringObjectPropertyType().withValue(contents.get("ASN"));
 
-        ObjectType objAsn = new ObjectType().withProperties(new Hostname().withHostnameValue(stringObjectPropertyTypeAsn));
+        ObjectType objAsn = new ObjectType().withProperties(new Address().withCategory(CategoryTypeEnum.ASN)
+        .withAddressValue(stringObjectPropertyTypeAsn));
         Observable observableAsn = new Observable().withId(new QName(
                 "gerry.ptyxiaki.it.teithe", "observable-"
                 + UUID.randomUUID().toString(), "gerry"));
 
         observable2.setObject(objAsn);
+
+        //observable for source country
+
+
+        ObjectType objCountry = new ObjectType().withLocation(new LocationType().withName(contents.get("COUNTRY")));
+        Observable observableCountry = new Observable().withId(new QName(
+                "gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"));
+
+        observableCountry.setObject(objCountry);
 
         //Arraylist for all the observables so we can create an observable composition
         ArrayList<Observable> obsList = new ArrayList<Observable>();
@@ -103,6 +114,9 @@ public class StixProducer {
         obsList.add(observable);
         obsList.add(observable2);
         obsList.add(observableAsn);
+        obsList.add(observableCountry);
+
+
 
 
         ObservableCompositionType observableCompositionType = new ObservableCompositionType(obsList, OperatorTypeEnum.AND);
@@ -142,6 +156,116 @@ public class StixProducer {
         System.out.println("Validates: " + stixPackage.validate());
 
     }
+
+    public static void produceForMalwareDomain(final Map<String,String> contents) {
+        XMLGregorianCalendar now = HelperMethods.getTime();
+
+        StringObjectPropertyType stringObjectPropertyType = (new ObjectFactory()).createStringObjectPropertyType().withValue(contents.get("IP"));
+        Address addr = new Address()
+                .withAddressValue(stringObjectPropertyType)
+                .withCategory(CategoryTypeEnum.IPV_4_ADDR)
+                .withIsSource(true);
+
+
+        ObjectType objt = new ObjectType().withProperties(addr).withId(new QName("gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"));
+        Observable obs = new Observable();
+
+        obs.setObject(objt);
+
+
+        StringObjectPropertyType stringObjectPropertyTypeHost = (new ObjectFactory()).createStringObjectPropertyType().withValue(contents.get("Host"));
+
+        ObjectType obj2 = new ObjectType().withProperties(new Hostname().withHostnameValue(stringObjectPropertyTypeHost));
+        Observable observable2 = new Observable().withId(new QName(
+                "gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"));
+
+        observable2.setObject(obj2);
+
+        //observable for asn
+        StringObjectPropertyType stringObjectPropertyTypeAsn = (new ObjectFactory()).createStringObjectPropertyType().withValue(contents.get("ASN"));
+
+        ObjectType objAsn = new ObjectType().withProperties(new Address().withCategory(CategoryTypeEnum.ASN)
+                .withAddressValue(stringObjectPropertyTypeAsn));
+        Observable observableAsn = new Observable().withId(new QName(
+                "gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"));
+
+        observable2.setObject(objAsn);
+
+        //observable for source country
+
+
+        ObjectType objCountry = new ObjectType().withLocation(new LocationType().withName(contents.get("Country")));
+        Observable observableCountry = new Observable().withId(new QName(
+                "gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"));
+
+        observableCountry.setObject(objCountry);
+
+        //Arraylist for all the observables so we can create an observable composition
+        ArrayList<Observable> obsList = new ArrayList<Observable>();
+        obsList.add(obs);
+        obsList.add(observable2);
+        obsList.add(observableAsn);
+        obsList.add(observableCountry);
+
+
+        ObservableCompositionType observableCompositionType = new ObservableCompositionType(obsList, OperatorTypeEnum.AND);
+
+
+        final Indicator indicator = new Indicator()
+                .withId(new QName("gerry.ptyxiaki.it.teithe", "indicator-"
+                        + UUID.randomUUID().toString(), "gerry"))
+                .withTimestamp(now)
+                .withTitle("Malware infected host")
+                .withObservable(new Observable().withObservableComposition(observableCompositionType));
+        IndicatorsType indicators = new IndicatorsType(
+                new ArrayList<IndicatorBaseType>() {
+                    {
+                        add(indicator);
+                    }
+                });
+
+        //TTP for the description
+        String threat = contents.get("Description");
+        MalwareInstanceType malwareInstanceType = new MalwareInstanceType().withId(new QName("gerry.ptyxiaki.it.teithe", "observable-"
+                + UUID.randomUUID().toString(), "gerry"))
+                .withTitle(threat);
+
+        MalwareType malwareType = new MalwareType().withMalwareInstances(malwareInstanceType);
+
+        TTP ttp = new TTP()
+                .withTitle("Tactics ")
+                .withShortDescriptions(new StructuredTextType().withValue(threat))
+                .withBehavior(new BehaviorType().withMalware(malwareType));
+
+
+        STIXHeaderType stixHeader = new STIXHeaderType()
+                .withDescriptions(new StructuredTextType()
+                        .withValue("Malware infected domain"));
+
+        STIXPackage stixPackage = new STIXPackage()
+                .withSTIXHeader(stixHeader)
+                .withVersion("1.2")
+                .withTimestamp(now)
+                .withId(new QName("gerry.ptyxiaki.it.teithe", "package-"
+                        + UUID.randomUUID().toString(), "gerry"))
+                .withIndicators(indicators)
+                .withTTPs(new TTPsType().withTTPS(ttp));
+
+
+
+        System.out.println(stixPackage.toXMLString(true));
+
+        System.out.println(StringUtils.repeat("-", 120));
+
+        System.out.println("Validates: " + stixPackage.validate());
+    }
+
+    //Method for producing stix from malware domain list
+
     //method that produces stix contnet for threats
     public static void produceForThreat(String threat)
     {

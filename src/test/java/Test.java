@@ -21,13 +21,13 @@ public class Test {
 
      //   ParsersFromRssClass.getFromMalshare();
         Map<String,String> testMap = new HashMap<String, String>();
-        testMap.put("HASHTYPE","MD5");
-        testMap.put("MD5HASH","123cbr23423fnn23rn");
-        testMap.put("HOST","testhost.com");
-        testMap.put("IP","192.168.1.8");
-        testMap.put("ASN","2342");
+        testMap.put("Host","alegroup.info/ntnrrhst");
+        testMap.put("IP","194.87.217.87");
+        testMap.put("Country","RU");
+        testMap.put("ASN","197695");
+        testMap.put("Description","Ransom, Fake.PCN, Malspam");
 
-        StixProducer.produceForBadHost(testMap);
+        StixProducer.produceForMalwareDomain(testMap);
         //Testiong ThreatCOnnect SDK
         Connection conn = null;
 
