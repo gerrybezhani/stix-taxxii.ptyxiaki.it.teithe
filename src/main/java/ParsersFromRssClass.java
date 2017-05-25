@@ -148,15 +148,26 @@ public class ParsersFromRssClass {
                 Element table = h3El.get(i).nextElementSibling();
 
                 Element row1 = table.select("tr").get(1);
-                Elements td1 = row1.select("td");
+                Element td1 = row1.select("td").get(1);
+                Element td1v = row1.select("td").get(2);
 
                 Element row2 = table.select("tr").get(2);
-                Elements td2 = row1.select("td");
+                Element td2 = row2.select("td").get(1);
+                Element td2v = row2.select("td").get(2);
 
-                Element row3 = table.select("tr").get(2);
-                Elements td3 = row1.select("td");
 
-                mapCont.put("CVSS","Metrics container");
+                Element row3 = table.select("tr").get(3);
+                Element td3 = row3.select("td").get(1);
+                Element td3v = row3.select("td").get(2);
+
+
+                String str = td1.text() +":" + td2.text() +":" +td3.text();
+                String str2 = td1v.text() +"+" + td2v.text() +"+" +td3v.text();
+                System.out.println(str);
+                System.out.println(str2);
+
+                mapCont.put("CVSSscore",str);
+                mapCont.put("CVSSvector",str2);
             }
             else if(h3El.get(i).text().equals("References"))
             {

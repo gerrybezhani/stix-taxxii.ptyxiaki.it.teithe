@@ -452,7 +452,14 @@ public class StixProducer {
         VictimTargetingType victimTargetingType = new VictimTargetingType().
                 withIdentity(new IdentityType().withName(content.get("Vendor Information")));
 
-        CVSSVectorType cvssVectorType = new CVSSVectorType();
+        CVSSVectorType cvssVectorType = new CVSSVectorType()
+                .withBaseScore(StringUtils.split(content.get("CVSSscore"),":")[0])
+                .withTemporalScore(StringUtils.split(content.get("CVSSscore"),":")[1])
+                .withEnvironmentalScore(StringUtils.split(content.get("CVSSscore"),":")[2])
+                .withBaseVector(StringUtils.split(content.get("CVSSvector"),"+")[0])
+                .withTemporalVector(StringUtils.split(content.get("CVSSvector"),"+")[1])
+                .withEnvironmentalVector(StringUtils.split(content.get("CVSSvector"),"+")[2]);
+
         vulnerabilityType.withCVSSScore(cvssVectorType);
 
         InformationSourceType informationSourceType = new InformationSourceType()
