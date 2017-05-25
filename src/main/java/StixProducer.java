@@ -509,6 +509,7 @@ public class StixProducer {
 
         System.out.println(StringUtils.repeat("-", 120));
 
+
         System.out.println("Validates: " + stixPackage.validate());
     }
 

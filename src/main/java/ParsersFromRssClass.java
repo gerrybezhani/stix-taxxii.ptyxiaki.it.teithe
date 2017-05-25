@@ -145,6 +145,17 @@ public class ParsersFromRssClass {
             }
             else if(h3El.get(i).text().contains("CVSS Metrics "))
             {
+                Element table = h3El.get(i).nextElementSibling();
+
+                Element row1 = table.select("tr").get(1);
+                Elements td1 = row1.select("td");
+
+                Element row2 = table.select("tr").get(2);
+                Elements td2 = row1.select("td");
+
+                Element row3 = table.select("tr").get(2);
+                Elements td3 = row1.select("td");
+
                 mapCont.put("CVSS","Metrics container");
             }
             else if(h3El.get(i).text().equals("References"))
