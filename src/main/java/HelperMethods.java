@@ -27,8 +27,7 @@ public class HelperMethods {
     }
 
 
-    static Calendar getDateFromString(String dateStr)
-    {
+    static XMLGregorianCalendar getDateFromString(String dateStr) {
         DateFormat df = new SimpleDateFormat("dd MMM yyyy");
         Date date = null;
         try {
@@ -36,11 +35,18 @@ public class HelperMethods {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Calendar cal = new GregorianCalendar();
+        GregorianCalendar cal = new GregorianCalendar();
+
 
         cal.setTime(date);
 
-        return cal;
+        XMLGregorianCalendar date2 = null;
+        try {
+            date2 = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+        } catch (DatatypeConfigurationException e) {
+            e.printStackTrace();
+        }
+        return date2;
     }
 
     //this method gets the acronym for IP category from ProjectHoneypot.org and returns the

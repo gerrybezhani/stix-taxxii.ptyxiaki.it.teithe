@@ -4,6 +4,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -96,6 +97,10 @@ public class ParsersFromRssClass {
         //select all the h3 elements with arte the ones that we care for
         Elements h3El = doc.select("h3");
 
+        //get title of vulv
+        Element h2el = doc.select("h2").first();
+        mapCont.put("Title",h2el.text());
+
         for (int i = 0; i < h3El.size(); i++) {
 
             if(h3El.get(i).text().equals("Description"))
@@ -163,8 +168,6 @@ public class ParsersFromRssClass {
 
                 String str = td1.text() +":" + td2.text() +":" +td3.text();
                 String str2 = td1v.text() +"+" + td2v.text() +"+" +td3v.text();
-                System.out.println(str);
-                System.out.println(str2);
 
                 mapCont.put("CVSSscore",str);
                 mapCont.put("CVSSvector",str2);
@@ -182,7 +185,22 @@ public class ParsersFromRssClass {
             else if(h3El.get(i).text().equals("Other Information"))
             {
                 Element list = h3El.get(i).nextElementSibling();
-                mapCont.put("Other Information",list.text());
+                Elements impElms = list.getElementsByTag("span");
+
+
+                String strToReturn = "";
+
+                for (int e = 0; e < impElms.size(); e++) {
+                   if(!impElms.get(e).hasClass("field-title"))
+                   {
+                        strToReturn += impElms.get(e).text() +":";
+                   }
+                }
+
+               // System.out.println(strToReturn);
+
+
+                mapCont.put("Other Information",strToReturn);
 
                 return mapCont;
             }

@@ -435,6 +435,11 @@ public class StixProducer {
 
     public static void cveGen(Map<String,String> content)
     {
+        //cleaning up the other info to het cve id and dates
+        String otherInfoStr = content.get("Other Information");
+        String[] otherInfoTable = StringUtils.split(otherInfoStr,":");
+
+
 
         DateTimeWithPrecisionType dt = new DateTimeWithPrecisionType();
 
@@ -443,11 +448,10 @@ public class StixProducer {
                 withTitle(content.get("Title"))
                 .withDescriptions(new StructuredTextType().withValue(content.get("Description")))
                 .withShortDescriptions(new StructuredTextType().withValue(content.get("Overview")))
-                .withCVEID(content.get("Other Information"))
+                .withCVEID(otherInfoTable[0])
                 .withReferences(new ReferencesType().withReferences(content.get("References")))
-                .withCVEID(null)
-                .withPublishedDateTime(null)
-                .withPublishedDateTime(null);
+                .withPublishedDateTime(new DateTimeWithPrecisionType().withValue(HelperMethods.getDateFromString(otherInfoTable[2])));
+
 
         VictimTargetingType victimTargetingType = new VictimTargetingType().
                 withIdentity(new IdentityType().withName(content.get("Vendor Information")));
@@ -464,8 +468,8 @@ public class StixProducer {
 
         InformationSourceType informationSourceType = new InformationSourceType()
                 .withDescriptions(new StructuredTextType().withValue(content.get("Credit")));
-        ExploitTargetBaseType exploitTargetBaseType = new ExploitTarget()
-                .withInformationSource(informationSourceType );
+
+        exploitTarget.withInformationSource(informationSourceType);
 
         exploitTarget.withVulnerabilities(vulnerabilityType);
 
